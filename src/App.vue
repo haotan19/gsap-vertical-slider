@@ -22,8 +22,16 @@ const slideData = [
 ];
 
 const slidesPositions = reactive({
-  value: [-2, -1, 0, 1, 2]
-})
+  value: [-2, -1, 0, 1, 2],
+});
+
+const handleNextSlideTransition = () => {
+  slidesPositions.value = slidesPositions.value.map((num) => {
+    if (num < 2) {
+      return num + 1;
+    } else return -2;
+  });
+};
 
 onMounted(() => {
   // gsap.fromTo
@@ -44,8 +52,10 @@ onMounted(() => {
       :pos="-Math.floor((slideData.length) / 2) + idx"
     ></Slide> -->
   </div>
-  <button >Prev</button>
-  <button class="absolute right-0">NEXT</button>
+  <button>Prev</button>
+  <button class="absolute right-0" @click="handleNextSlideTransition">
+    NEXT
+  </button>
 </template>
 
 <style></style>
