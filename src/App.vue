@@ -29,12 +29,15 @@ const slidesPositions = reactive({
   value: [-2, -1, 0, 1, 2],
 });
 
+const handlePreviousSlideTransition = () => {
+  slidesPositions.value = slidesPositions.value.map((num) =>
+    num > -2 ? num - 1 : 2
+  );
+};
 const handleNextSlideTransition = () => {
-  slidesPositions.value = slidesPositions.value.map((num) => {
-    if (num < 2) {
-      return num + 1;
-    } else return -2;
-  });
+  slidesPositions.value = slidesPositions.value.map((num) =>
+    num < 2 ? num + 1 : -2
+  );
 };
 
 onMounted(() => {
@@ -57,8 +60,8 @@ onMounted(() => {
       :pos="-Math.floor((slideData.length) / 2) + idx"
     ></Slide> -->
   </div>
-  <button>Prev</button>
-  <button class="absolute right-0" @click="handleNextSlideTransition">
+  <button class="absolute left-4 top-1/2 p-8" @click="handlePreviousSlideTransition">Prev</button>
+  <button class="absolute right-4 top-1/2 p-8" @click="handleNextSlideTransition">
     NEXT
   </button>
 </template>
