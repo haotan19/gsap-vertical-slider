@@ -2,16 +2,20 @@
 import Slide from "./components/slide.vue";
 import { gsap } from "gsap";
 import { onMounted, reactive } from "vue";
+import { SlideData } from "./types";
 
-const slideData = [
+const slideData: SlideData[] = [
   {
     id: 1,
+    heading: "Step out to the edge",
   },
   {
     id: 2,
+    heading: "Step out to the edge",
   },
   {
     id: 3,
+    heading: "Step out to the edge",
   },
   {
     id: 4,
@@ -39,11 +43,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="slider-container">
+  <div class="">
     <Slide
       :key="slideData[0].id"
       :idx="0"
       :pos="slidesPositions.value[2]"
+      :slide-data="slideData[2]"
     ></Slide>
     <!-- <Slide
       v-for="(slide, idx) in slideData"
@@ -52,14 +57,10 @@ onMounted(() => {
       :pos="-Math.floor((slideData.length) / 2) + idx"
     ></Slide> -->
   </div>
-  <button >Prev</button>
+  <button>Prev</button>
   <button class="absolute right-0" @click="handleNextSlideTransition">
     NEXT
   </button>
 </template>
 
-<style>
-.slider-container {
-  perspective: 500px;
-}
-</style>
+<style></style>
