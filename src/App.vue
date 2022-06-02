@@ -39,7 +39,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="">
+  <div class="slider-container">
     <Slide
       :key="slideData[0].id"
       :idx="0"
@@ -52,10 +52,14 @@ onMounted(() => {
       :pos="-Math.floor((slideData.length) / 2) + idx"
     ></Slide> -->
   </div>
-  <button>Prev</button>
+  <button >Prev</button>
   <button class="absolute right-0" @click="handleNextSlideTransition">
     NEXT
   </button>
 </template>
 
-<style></style>
+<style>
+.slider-container {
+  perspective: 500px;
+}
+</style>
