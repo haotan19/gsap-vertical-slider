@@ -48,7 +48,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="">
+  <div class="overflow-hidden w-screen">
     <Slide
       :key="slideData[0].id"
       :idx="0"

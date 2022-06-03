@@ -36,7 +36,7 @@ watch(() => props.pos, handlePositionUpdate);
 
 const handleMouseOverEffect = (event: PointerEvent) => {
   const rect = cardEl.value?.getBoundingClientRect();
-  if (rect) {
+  if (props.pos === 0 && rect) {
     const horizontalPercentage =
       ((event.clientX - (rect.right + rect.left) / 2) / rect.width) * 100 * 2;
     const verticalPercentage =
@@ -54,9 +54,9 @@ const handleMouseOverEffect = (event: PointerEvent) => {
       translateZ: 100,
     });
     gsap.to(fgEl.value, {
-      rotateX: (15 * verticalPercentage) / 100,
-      rotateY: (15 * horizontalPercentage) / 100,
-      translateZ: 50,
+      rotateX: (7 * verticalPercentage) / 100,
+      rotateY: (7 * horizontalPercentage) / 100,
+      translateZ: 25,
     });
   }
 };
@@ -110,11 +110,14 @@ const getImgUrl = ({ imgType = "bg" }: { imgType?: "fg" | "bg" } = {}) => {
         class="absolute top-0"
         :src="getImgUrl({ imgType: 'fg' })"
         :alt="slideData.heading"
-        style="transform-origin: top center 25px;"
+        style="transform-origin: top center 25px"
       />
     </div>
-    <div ref="contentEl" class="absolute-center pointer-events-none">
-      <h1 class="text-5xl text-white" v-html="getHeadingHTML()"></h1>
+    <div ref="contentEl" class="absolute left-1/2 bottom-48 -translate-x-1/2 pointer-events-none">
+      <h1
+        class="text-5xl text-white uppercase font-bold tracking-wider"
+        v-html="getHeadingHTML()"
+      ></h1>
     </div>
   </div>
 </template>
