@@ -16,6 +16,8 @@ const slideData: SlideData[] = [
   {
     id: 3,
     heading: "Step out to the edge",
+    img: '../assets/skateboard-1-unsplash-jan-Kopriva-bg.png',
+    imgFg: '../assets/skateboard-1-unsplash-jan-Kopriva-fg.png'
   },
   {
     id: 4,
@@ -66,4 +68,8 @@ onMounted(() => {
   </button>
 </template>
 
-<style></style>
+<style>
+body {
+  background-color: gray;
+}
+</style>

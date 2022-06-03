@@ -11,6 +11,7 @@ const props = defineProps<{
 
 const cardEl = ref<HTMLElement | null>(null);
 const contentEl = ref<HTMLElement | null>(null);
+const fgEl = ref<HTMLElement | null>(null);
 
 const handlePositionUpdate = (newPos: number, oldPos: number) => {
   if (oldPos === 2 || oldPos === -2) {
@@ -23,11 +24,11 @@ const handlePositionUpdate = (newPos: number, oldPos: number) => {
     x: 300 * newPos,
   });
 
-  if(newPos === 0 && contentEl && contentEl.value) {
-    const characters = contentEl.value.querySelectorAll("h1 span")
+  if (newPos === 0 && contentEl && contentEl.value) {
+    const characters = contentEl.value.querySelectorAll("h1 span");
     gsap.to(characters, {
-      y: 100
-    })
+      y: 100,
+    });
   }
 };
 
@@ -52,6 +53,11 @@ const handleMouseOverEffect = (event: PointerEvent) => {
       rotateY: (4 * horizontalPercentage) / 100,
       translateZ: 100,
     });
+    gsap.to(fgEl.value, {
+      rotateX: (15 * verticalPercentage) / 100,
+      rotateY: (15 * horizontalPercentage) / 100,
+      translateZ: 50,
+    });
   }
 };
 const resetMouseOverEffect = (event: PointerEvent) => {
@@ -64,14 +70,28 @@ const resetMouseOverEffect = (event: PointerEvent) => {
     rotateY: 0,
     translateZ: 0,
   });
+  gsap.to(fgEl.value, {
+    rotateX: 0,
+    rotateY: 0,
+    translateZ: 0,
+  });
 };
 
 // TODO: Future text animation
-const getHeadingHTML = () => 
-  "<span>" + props.slideData.heading?.split("").join("</span><span>") + "</span>"
+const getHeadingHTML = () =>
+  "<span>" +
+  props.slideData.heading?.split("").join("</span><span>") +
+  "</span>";
 
 // TODO: 1. Find a set of vertical product ot display...
 // TODO: 2. Find the font
+
+const getImgUrl = ({ imgType = "bg" }: { imgType?: "fg" | "bg" } = {}) => {
+  if (props.slideData.img && imgType === "bg")
+    return new URL(props.slideData.img, import.meta.url).href;
+  else if (props.slideData.imgFg)
+    return new URL(props.slideData.imgFg, import.meta.url).href;
+};
 </script>
 
 <template>
@@ -79,12 +99,22 @@ const getHeadingHTML = () =>
   <div class="slide-outer">
     <div
       ref="cardEl"
-      class="absolute-center w-[300px] h-[500px] bg-slate-300"
+      class="absolute-center w-[300px] h-[450px] bg-slate-300 slide-inner"
       @pointermove="handleMouseOverEffect"
       @pointerleave="resetMouseOverEffect"
-    ></div>
+    >
+      <img :src="getImgUrl()" :alt="slideData.heading" />
+      <img
+        v-if="getImgUrl({ imgType: 'fg' })"
+        ref="fgEl"
+        class="absolute top-0"
+        :src="getImgUrl({ imgType: 'fg' })"
+        :alt="slideData.heading"
+        style="transform-origin: top center 25px;"
+      />
+    </div>
     <div ref="contentEl" class="absolute-center pointer-events-none">
-      <h1 class="text-5xl" v-html="getHeadingHTML()"></h1>
+      <h1 class="text-5xl text-white" v-html="getHeadingHTML()"></h1>
     </div>
   </div>
 </template>
@@ -101,5 +131,8 @@ const getHeadingHTML = () =>
 }
 .absolute-center {
   @apply absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2;
+}
+.slide-inner {
+  perspective: 1000px;
 }
 </style>
