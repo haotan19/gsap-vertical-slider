@@ -3,6 +3,8 @@ import { onMounted, ref, watch } from "vue";
 import { gsap } from "gsap";
 import { SlideData } from "../types";
 
+const SLIDE_SPACING = 340;
+
 const props = defineProps<{
   pos: number;
   idx: number;
@@ -17,9 +19,9 @@ const handlePositionUpdate = (newPos: number, oldPos: number) => {
   if (cardEl.value) {
     if ((oldPos === 2 && newPos === -2) || (oldPos === -2 && newPos === 2)) {
       gsap.to(cardEl.value, {
-        x: 400 * newPos,
+        x: SLIDE_SPACING * newPos,
         z: -120 - 10 * 2,
-        rotateY: -20 * newPos,
+        rotateY: -30 * newPos,
         onStart: () => {
           if (cardEl.value) cardEl.value.style.zIndex = "-20";
         },
@@ -29,9 +31,9 @@ const handlePositionUpdate = (newPos: number, oldPos: number) => {
       });
     } else {
       gsap.to(cardEl.value, {
-        x: 400 * newPos,
+        x: SLIDE_SPACING * newPos,
         z: newPos === 0 ? 0 : -120 - 10 * Math.abs(newPos),
-        rotateY: -20 * newPos,
+        rotateY: -30 * newPos,
         filter:
           newPos === 0
             ? "grayscale(0) brightness(1)"
@@ -53,13 +55,16 @@ watch(() => props.pos, handlePositionUpdate);
 onMounted(() => {
   if (cardEl) {
     gsap.to(cardEl.value, {
-      x: 400 * props.pos,
+      x: SLIDE_SPACING * props.pos,
       z: props.pos === 0 ? 0 : -120,
       rotateY: -20 * props.pos,
       filter:
         props.pos === 0
           ? "grayscale(0) brightness(1)"
           : "grayscale(100) brightness(.5)",
+      onStart: () => {
+        if (cardEl.value) cardEl.value.style.zIndex = "0";
+      },
     });
   }
 });
@@ -146,10 +151,10 @@ const getImgUrl = ({ imgType = "bg" }: { imgType?: "fg" | "bg" } = {}) => {
   <div
     ref="contentEl"
     v-if="pos === 0"
-    class="absolute left-1/2 bottom-48 -translate-x-1/2 pointer-events-none z-10"
+    class="absolute left-1/2 bottom-48 pointer-events-none z-10" style="transform: translateX(-55%) translateY(30%);"
   >
     <h1
-      class="text-5xl text-white uppercase font-bold tracking-wider"
+      class="text-5xl text-white uppercase font-bold max-w-sm"
       v-html="getHeadingHTML()"
     ></h1>
   </div>
