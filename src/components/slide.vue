@@ -22,6 +22,8 @@ const handlePositionUpdate = (newPos: number, oldPos: number) => {
   }
   gsap.to(cardEl.value, {
     x: 400 * newPos,
+    z: newPos === 0 ? 0 : -120,
+    rotateY: -20 * newPos,
     filter:
       newPos === 0
         ? "grayscale(0) brightness(1)"
@@ -42,6 +44,8 @@ onMounted(() => {
   if (cardEl) {
     gsap.to(cardEl.value, {
       x: 400 * props.pos,
+      z: props.pos === 0 ? 0 : -120,
+      rotateY: -20 * props.pos,
       filter:
         props.pos === 0
           ? "grayscale(0) brightness(1)"
@@ -77,20 +81,22 @@ const handleMouseOverEffect = (event: PointerEvent) => {
   }
 };
 const resetMouseOverEffect = (event: PointerEvent) => {
-  gsap.to(cardEl.value, {
-    rotateX: 0,
-    rotateY: 0,
-  });
-  gsap.to(contentEl.value, {
-    rotateX: 0,
-    rotateY: 0,
-    translateZ: 0,
-  });
-  gsap.to(fgEl.value, {
-    rotateX: 0,
-    rotateY: 0,
-    translateZ: 0,
-  });
+  if (props.pos === 0) {
+    gsap.to(cardEl.value, {
+      rotateX: 0,
+      rotateY: 0,
+    });
+    gsap.to(contentEl.value, {
+      rotateX: 0,
+      rotateY: 0,
+      translateZ: 0,
+    });
+    gsap.to(fgEl.value, {
+      rotateX: 0,
+      rotateY: 0,
+      translateZ: 0,
+    });
+  }
 };
 
 // TODO: Future text animation
