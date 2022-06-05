@@ -40,8 +40,6 @@ const handleNextSlideTransition = () => {
   slidesPositions.value = slidesPositions.value.map((num) =>
     num < 2 ? num + 1 : -2
   );
-  console.log("NOT THAT:")
-  console.log(slidesPositions.value)
 };
 
 onMounted(() => {
