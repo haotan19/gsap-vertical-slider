@@ -14,31 +14,30 @@ const contentEl = ref<HTMLElement | null>(null);
 const fgEl = ref<HTMLElement | null>(null);
 
 const handlePositionUpdate = (newPos: number, oldPos: number) => {
-  if ((oldPos === 2 && newPos === -2) || (oldPos === -2 && newPos === 2)) {
-    const tl = gsap.timeline()
-    tl.to(cardEl.value, {
-      zIndex: -20,
-      duration: 0.02
-    })
-     tl.to(cardEl.value, {
-      x: 400 * newPos,
-      z: -120 - 10 * 2,
-      rotateY: -20 * newPos,
-    });
-    tl.to(cardEl.value, {
-      zIndex: 0, 
-    }, "<")
-
-  } else {
-    gsap.to(cardEl.value, {
-      x: 400 * newPos,
-      z: newPos === 0 ? 0 : -120 - 10 * Math.abs(newPos),
-      rotateY: -20 * newPos,
-      filter:
-        newPos === 0
-          ? "grayscale(0) brightness(1)"
-          : "grayscale(100) brightness(.5)",
-    });
+  if (cardEl.value) {
+    if ((oldPos === 2 && newPos === -2) || (oldPos === -2 && newPos === 2)) {
+      gsap.to(cardEl.value, {
+        x: 400 * newPos,
+        z: -120 - 10 * 2,
+        rotateY: -20 * newPos,
+        onStart: () => {
+          if (cardEl.value) cardEl.value.style.zIndex = "-20";
+        },
+        onComplete: () => {
+          if (cardEl.value) cardEl.value.style.zIndex = "-20";
+        },
+      });
+    } else {
+      gsap.to(cardEl.value, {
+        x: 400 * newPos,
+        z: newPos === 0 ? 0 : -120 - 10 * Math.abs(newPos),
+        rotateY: -20 * newPos,
+        filter:
+          newPos === 0
+            ? "grayscale(0) brightness(1)"
+            : "grayscale(100) brightness(.5)",
+      });
+    }
   }
 
   if (newPos === 0 && contentEl && contentEl.value) {
