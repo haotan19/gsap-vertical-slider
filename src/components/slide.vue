@@ -24,7 +24,7 @@ const handlePositionUpdate = (newPos: number, oldPos: number) => {
           if (cardEl.value) cardEl.value.style.zIndex = "-20";
         },
         onComplete: () => {
-          if (cardEl.value) cardEl.value.style.zIndex = "-20";
+          if (cardEl.value) cardEl.value.style.zIndex = "0";
         },
       });
     } else {
