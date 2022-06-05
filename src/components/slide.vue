@@ -21,7 +21,11 @@ const handlePositionUpdate = (newPos: number, oldPos: number) => {
     }
   }
   gsap.to(cardEl.value, {
-    x: 300 * newPos,
+    x: 400 * newPos,
+    filter:
+      newPos === 0
+        ? "grayscale(0) brightness(1)"
+        : "grayscale(100) brightness(.5)",
   });
 
   if (newPos === 0 && contentEl && contentEl.value) {
@@ -33,6 +37,18 @@ const handlePositionUpdate = (newPos: number, oldPos: number) => {
 };
 
 watch(() => props.pos, handlePositionUpdate);
+
+onMounted(() => {
+  if (cardEl) {
+    gsap.to(cardEl.value, {
+      x: 400 * props.pos,
+      filter:
+        props.pos === 0
+          ? "grayscale(0) brightness(1)"
+          : "grayscale(100) brightness(.5)",
+    });
+  }
+});
 
 const handleMouseOverEffect = (event: PointerEvent) => {
   const rect = cardEl.value?.getBoundingClientRect();
@@ -96,34 +112,38 @@ const getImgUrl = ({ imgType = "bg" }: { imgType?: "fg" | "bg" } = {}) => {
 
 <template>
   <!-- if POS is 0, set it to screen center -->
-  <div class="slide-outer">
-    <div
-      ref="cardEl"
-      class="absolute-center w-[300px] h-[450px] bg-slate-300 slide-inner"
-      @pointermove="handleMouseOverEffect"
-      @pointerleave="resetMouseOverEffect"
-    >
-      <img :src="getImgUrl()" :alt="slideData.heading" />
-      <img
-        v-if="getImgUrl({ imgType: 'fg' })"
-        ref="fgEl"
-        class="absolute top-0"
-        :src="getImgUrl({ imgType: 'fg' })"
-        :alt="slideData.heading"
-        style="transform-origin: top center 25px"
-      />
-    </div>
-    <div ref="contentEl" class="absolute left-1/2 bottom-48 -translate-x-1/2 pointer-events-none">
-      <h1
-        class="text-5xl text-white uppercase font-bold tracking-wider"
-        v-html="getHeadingHTML()"
-      ></h1>
-    </div>
+  <!-- <div class="slide-outer"> -->
+  <div
+    ref="cardEl"
+    class="absolute-center w-[300px] h-[450px] bg-slate-300 slide-inner"
+    @pointermove="handleMouseOverEffect"
+    @pointerleave="resetMouseOverEffect"
+  >
+    <img :src="getImgUrl()" :alt="slideData.heading" />
+    <img
+      v-if="getImgUrl({ imgType: 'fg' })"
+      ref="fgEl"
+      class="absolute top-0"
+      :src="getImgUrl({ imgType: 'fg' })"
+      :alt="slideData.heading"
+      style="transform-origin: top center 25px"
+    />
   </div>
+  <div
+    ref="contentEl"
+    v-show="pos === 0"
+    class="absolute left-1/2 bottom-48 -translate-x-1/2 pointer-events-none z-10"
+  >
+    <h1
+      class="text-5xl text-white uppercase font-bold tracking-wider"
+      v-html="getHeadingHTML()"
+    ></h1>
+  </div>
+  <!-- </div> -->
 </template>
 
 <style>
-.slide-outer {
+/* .slide-outer {
   perspective: 1000px;
   height: 100vh;
   width: 100vw;
@@ -131,7 +151,7 @@ const getImgUrl = ({ imgType = "bg" }: { imgType?: "fg" | "bg" } = {}) => {
   top: 0;
   left: 0;
   z-index: -1;
-}
+} */
 .absolute-center {
   @apply absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2;
 }

@@ -40,6 +40,8 @@ const handleNextSlideTransition = () => {
   slidesPositions.value = slidesPositions.value.map((num) =>
     num < 2 ? num + 1 : -2
   );
+  console.log("NOT THAT:")
+  console.log(slidesPositions.value)
 };
 
 onMounted(() => {
@@ -48,11 +50,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="overflow-hidden w-screen">
+  <div class="relative overflow-hidden w-screen h-screen">
     <Slide
-      :key="slideData[0].id"
-      :idx="0"
-      :pos="slidesPositions.value[2]"
+      v-for="(d, idx) in slideData"
+      :idx="idx"
+      :pos="slidesPositions.value[idx]"
       :slide-data="slideData[2]"
     ></Slide>
     <!-- <Slide
