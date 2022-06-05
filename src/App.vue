@@ -50,7 +50,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="relative overflow-hidden w-screen h-screen">
+  <div class="relative overflow-hidden w-screen h-screen perspective">
     <Slide
       v-for="(d, idx) in slideData"
       :idx="idx"
@@ -73,5 +73,8 @@ onMounted(() => {
 <style>
 body {
   background-color: gray;
+}
+.perspective {
+    perspective: 1000px;
 }
 </style>
