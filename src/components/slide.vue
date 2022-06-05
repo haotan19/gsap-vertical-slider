@@ -14,21 +14,32 @@ const contentEl = ref<HTMLElement | null>(null);
 const fgEl = ref<HTMLElement | null>(null);
 
 const handlePositionUpdate = (newPos: number, oldPos: number) => {
-  if (oldPos === 2 || oldPos === -2) {
-    if (newPos === 2 || newPos === -2) {
-      // TODO: Use the old position to trigger the unique animation between -2 <-> 2
-      // console.log("TRIGGER SPECIAL");
-    }
+  if ((oldPos === 2 && newPos === -2) || (oldPos === -2 && newPos === 2)) {
+    const tl = gsap.timeline()
+    tl.to(cardEl.value, {
+      zIndex: -20,
+      duration: 0.02
+    })
+     tl.to(cardEl.value, {
+      x: 400 * newPos,
+      z: -120 - 10 * 2,
+      rotateY: -20 * newPos,
+    });
+    tl.to(cardEl.value, {
+      zIndex: 0, 
+    }, "<")
+
+  } else {
+    gsap.to(cardEl.value, {
+      x: 400 * newPos,
+      z: newPos === 0 ? 0 : -120 - 10 * Math.abs(newPos),
+      rotateY: -20 * newPos,
+      filter:
+        newPos === 0
+          ? "grayscale(0) brightness(1)"
+          : "grayscale(100) brightness(.5)",
+    });
   }
-  gsap.to(cardEl.value, {
-    x: 400 * newPos,
-    z: newPos === 0 ? 0 : -120,
-    rotateY: -20 * newPos,
-    filter:
-      newPos === 0
-        ? "grayscale(0) brightness(1)"
-        : "grayscale(100) brightness(.5)",
-  });
 
   if (newPos === 0 && contentEl && contentEl.value) {
     const characters = contentEl.value.querySelectorAll("h1 span");
@@ -117,8 +128,6 @@ const getImgUrl = ({ imgType = "bg" }: { imgType?: "fg" | "bg" } = {}) => {
 </script>
 
 <template>
-  <!-- if POS is 0, set it to screen center -->
-  <!-- <div class="slide-outer"> -->
   <div
     ref="cardEl"
     class="absolute-center w-[300px] h-[450px] bg-slate-300 slide-inner"
@@ -137,7 +146,7 @@ const getImgUrl = ({ imgType = "bg" }: { imgType?: "fg" | "bg" } = {}) => {
   </div>
   <div
     ref="contentEl"
-    v-show="pos === 0"
+    v-if="pos === 0"
     class="absolute left-1/2 bottom-48 -translate-x-1/2 pointer-events-none z-10"
   >
     <h1
@@ -145,19 +154,9 @@ const getImgUrl = ({ imgType = "bg" }: { imgType?: "fg" | "bg" } = {}) => {
       v-html="getHeadingHTML()"
     ></h1>
   </div>
-  <!-- </div> -->
 </template>
 
 <style>
-/* .slide-outer {
-  perspective: 1000px;
-  height: 100vh;
-  width: 100vw;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: -1;
-} */
 .absolute-center {
   @apply absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2;
 }
