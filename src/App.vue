@@ -16,8 +16,8 @@ const slideData: SlideData[] = [
   {
     id: 3,
     heading: "Step out to the edge",
-    img: '../assets/skateboard-1-unsplash-jan-Kopriva-bg.png',
-    imgFg: '../assets/skateboard-1-unsplash-jan-Kopriva-fg.png'
+    img: "../assets/skateboard-1-unsplash-jan-Kopriva-bg.png",
+    imgFg: "../assets/skateboard-1-unsplash-jan-Kopriva-fg.png",
   },
   {
     id: 4,
@@ -31,12 +31,12 @@ const slidesPositions = reactive({
   value: [-2, -1, 0, 1, 2],
 });
 
-const handlePreviousSlideTransition = () => {
+const handleNextSlideTransition = () => {
   slidesPositions.value = slidesPositions.value.map((num) =>
     num > -2 ? num - 1 : 2
   );
 };
-const handleNextSlideTransition = () => {
+const handlePreviousSlideTransition = () => {
   slidesPositions.value = slidesPositions.value.map((num) =>
     num < 2 ? num + 1 : -2
   );
@@ -62,8 +62,16 @@ onMounted(() => {
       :pos="-Math.floor((slideData.length) / 2) + idx"
     ></Slide> -->
   </div>
-  <button class="absolute left-4 top-1/2 p-8" @click="handlePreviousSlideTransition">Prev</button>
-  <button class="absolute right-4 top-1/2 p-8" @click="handleNextSlideTransition">
+  <button
+    class="absolute left-4 top-1/2 p-8"
+    @click="handlePreviousSlideTransition"
+  >
+    Prev
+  </button>
+  <button
+    class="absolute right-4 top-1/2 p-8"
+    @click="handleNextSlideTransition"
+  >
     NEXT
   </button>
 </template>
@@ -73,6 +81,6 @@ body {
   background-color: gray;
 }
 .perspective {
-    perspective: 1000px;
+  perspective: 1000px;
 }
 </style>
