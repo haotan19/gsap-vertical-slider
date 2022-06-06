@@ -8,22 +8,30 @@ const slideData: SlideData[] = [
   {
     id: 1,
     heading: "Step out to the edge",
-  },
-  {
-    id: 2,
-    heading: "Step out to the edge",
-  },
-  {
-    id: 3,
-    heading: "Step out to the edge",
     img: "../assets/skateboard-1-unsplash-jan-Kopriva-bg.png",
     imgFg: "../assets/skateboard-1-unsplash-jan-Kopriva-fg.png",
   },
   {
+    id: 2,
+    heading: "Step out to the edge",
+    img: "../assets/s2-bg-unsplash.png",
+    imgFg: "../assets/s2-fg-unsplash.png"
+  },
+  {
+    id: 3,
+    heading: "Step out to the edge",
+    img: "../assets/sk-3-bg.png",
+    imgFg: "../assets/sk-3-fg.png",
+  },
+  {
     id: 4,
+    img: "../assets/s4-bg.png",
+    imgFg: "../assets/s4-fg.png",
   },
   {
     id: 5,
+    img: "../assets/s5-bg.png",
+    imgFg: "../assets/s5-fg.png",
   },
 ];
 
@@ -53,14 +61,8 @@ onMounted(() => {
       v-for="(d, idx) in slideData"
       :idx="idx"
       :pos="slidesPositions.value[idx]"
-      :slide-data="slideData[2]"
+      :slide-data="d"
     ></Slide>
-    <!-- <Slide
-      v-for="(slide, idx) in slideData"
-      :key="slide.id"
-      :idx="idx"
-      :pos="-Math.floor((slideData.length) / 2) + idx"
-    ></Slide> -->
   </div>
   <button
     class="absolute left-4 top-1/2 p-8"

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted, ref, watch } from "vue";
+import { onMounted, reactive, ref, watch } from "vue";
 import { gsap } from "gsap";
 import { SlideData } from "../types";
 
@@ -10,6 +10,10 @@ const props = defineProps<{
   idx: number;
   slideData: SlideData;
 }>();
+
+const data = reactive({
+  onPosTransition: false,
+});
 
 const cardEl = ref<HTMLElement | null>(null);
 const contentEl = ref<HTMLElement | null>(null);
@@ -24,9 +28,11 @@ const handlePositionUpdate = (newPos: number, oldPos: number) => {
         rotateY: -30 * newPos,
         onStart: () => {
           if (cardEl.value) cardEl.value.style.zIndex = "-20";
+          data.onPosTransition = true;
         },
         onComplete: () => {
           if (cardEl.value) cardEl.value.style.zIndex = "0";
+          data.onPosTransition = false;
         },
       });
     } else {
@@ -38,6 +44,12 @@ const handlePositionUpdate = (newPos: number, oldPos: number) => {
           newPos === 0
             ? "grayscale(0) brightness(1)"
             : "grayscale(100) brightness(.5)",
+        onStart: () => {
+          data.onPosTransition = true;
+        },
+        onComplete: () => {
+          data.onPosTransition = false;
+        },
       });
     }
   }
@@ -71,7 +83,7 @@ onMounted(() => {
 
 const handleMouseOverEffect = (event: PointerEvent) => {
   const rect = cardEl.value?.getBoundingClientRect();
-  if (props.pos === 0 && rect) {
+  if (!data.onPosTransition && props.pos === 0 && rect) {
     const horizontalPercentage =
       ((event.clientX - (rect.right + rect.left) / 2) / rect.width) * 100 * 2;
     const verticalPercentage =
@@ -79,38 +91,44 @@ const handleMouseOverEffect = (event: PointerEvent) => {
 
     // IMPROVEMENT:  consider using gsap.set() or gsap.quickSetter()
     //     because it can deliver even better performance.
-    gsap.to(cardEl.value, {
-      rotateX: (5 * verticalPercentage) / 100,
-      rotateY: (4 * horizontalPercentage) / 100,
-    });
-    gsap.to(contentEl.value, {
-      rotateX: (5 * verticalPercentage) / 100,
-      rotateY: (4 * horizontalPercentage) / 100,
-      translateZ: 100,
-    });
-    gsap.to(fgEl.value, {
-      rotateX: (7 * verticalPercentage) / 100,
-      rotateY: (7 * horizontalPercentage) / 100,
-      translateZ: 25,
-    });
+    if (cardEl.value)
+      gsap.to(cardEl.value, {
+        rotateX: (5 * verticalPercentage) / 100,
+        rotateY: (4 * horizontalPercentage) / 100,
+      });
+    if (contentEl.value)
+      gsap.to(contentEl.value, {
+        rotateX: (5 * verticalPercentage) / 100,
+        rotateY: (4 * horizontalPercentage) / 100,
+        translateZ: 100,
+      });
+    if (fgEl.value)
+      gsap.to(fgEl.value, {
+        rotateX: (7 * verticalPercentage) / 100,
+        rotateY: (7 * horizontalPercentage) / 100,
+        translateZ: 25,
+      });
   }
 };
 const resetMouseOverEffect = (event: PointerEvent) => {
   if (props.pos === 0) {
-    gsap.to(cardEl.value, {
-      rotateX: 0,
-      rotateY: 0,
-    });
-    gsap.to(contentEl.value, {
-      rotateX: 0,
-      rotateY: 0,
-      translateZ: 0,
-    });
-    gsap.to(fgEl.value, {
-      rotateX: 0,
-      rotateY: 0,
-      translateZ: 0,
-    });
+    if (cardEl.value)
+      gsap.to(cardEl.value, {
+        rotateX: 0,
+        rotateY: 0,
+      });
+    if (contentEl.value)
+      gsap.to(contentEl.value, {
+        rotateX: 0,
+        rotateY: 0,
+        translateZ: 0,
+      });
+    if (fgEl.value)
+      gsap.to(fgEl.value, {
+        rotateX: 0,
+        rotateY: 0,
+        translateZ: 0,
+      });
   }
 };
 
@@ -138,7 +156,11 @@ const getImgUrl = ({ imgType = "bg" }: { imgType?: "fg" | "bg" } = {}) => {
     @pointermove="handleMouseOverEffect"
     @pointerleave="resetMouseOverEffect"
   >
-    <img :src="getImgUrl()" :alt="slideData.heading" />
+    <img
+      class="w-full h-full object-cover"
+      :src="getImgUrl()"
+      :alt="slideData.heading"
+    />
     <img
       v-if="getImgUrl({ imgType: 'fg' })"
       ref="fgEl"
@@ -150,8 +172,9 @@ const getImgUrl = ({ imgType = "bg" }: { imgType?: "fg" | "bg" } = {}) => {
   </div>
   <div
     ref="contentEl"
-    v-if="pos === 0"
-    class="absolute left-1/2 bottom-48 pointer-events-none z-10" style="transform: translateX(-55%) translateY(30%);"
+    v-if="pos === 0 && slideData.heading"
+    class="absolute left-1/2 top-1/2 pointer-events-none z-10"
+    style="transform: translateX(-55%) translateY(80%)"
   >
     <h1
       class="text-5xl text-white uppercase font-bold max-w-sm"
