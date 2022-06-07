@@ -96,7 +96,7 @@ onMounted(() => {
       if (contentTo)
         contentTo({
           rotateX: result.rotateX,
-          rotateY: result.rotateX,
+          rotateY: result.rotateY,
           z: 100, // TODO: need some curve on Z transform
         });
 
@@ -105,7 +105,7 @@ onMounted(() => {
       if(fgTo) 
         fgTo({
           rotateX: fgResult.rotateX,
-          rotateY: fgResult.rotateX,
+          rotateY: fgResult.rotateY,
           z: 25, // TODO: need some curve on Z transform
         })
     });
@@ -120,9 +120,6 @@ const handleMouseOverEffect = (event: PointerEvent, fg?: boolean) => {
     const verticalPercentage =
       (((rect.bottom + rect.top) / 2 - event.clientY) / rect.height) * 100 * 2;
 
-    // IMPROVEMENT:  consider using gsap.set() or gsap.quickSetter()
-    //     because it can deliver even better performance.
-
     let rotateX = (5 * verticalPercentage) / 100;
     let rotateY = (4 * horizontalPercentage) / 100;
     if (fg) {
@@ -134,29 +131,6 @@ const handleMouseOverEffect = (event: PointerEvent, fg?: boolean) => {
         rotateX,
         rotateY,
     };
-
-    if (cardEl.value) {
-      // let rXTo = gsap.quickTo(cardEl.value, "rotateX", { ease: "power2" })
-      // let rYTo = gsap.quickTo(cardEl.value, "rotateY", { ease: "power3" })
-      // data.rXTo(rotateX);
-      // rYTo(rotateY)
-    }
-    // if (contentEl.value) {
-    //   let rXTo = gsap.quickTo(contentEl.value, "rotateX", { ease: "power3" })
-    //   let rYTo = gsap.quickTo(contentEl.value, "rotateY", { ease: "power3" })
-    //   let zTo = gsap.quickTo(contentEl.value, "translateZ")
-    //   rXTo(rotateX)
-    //   rXTo(rotateY)
-    //   zTo(100)
-    // }
-    // if (fgEl.value) {
-    //   let rXTo = gsap.quickTo(fgEl.value, "rotateX", { ease: "power3" })
-    //   let rYTo = gsap.quickTo(fgEl.value, "rotateY", { ease: "power3" })
-    //   let zTo = gsap.quickTo(fgEl.value, "translateZ")
-    //   rXTo((7 * verticalPercentage) / 100)
-    //   rXTo((7 * horizontalPercentage) / 100)
-    //   zTo(25)
-    // }
   }
 };
 const resetMouseOverEffect = (event: PointerEvent) => {
