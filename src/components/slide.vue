@@ -16,6 +16,7 @@ const data = reactive({
   rXTo: new Function(),
 });
 
+const cardContainer = ref<HTMLElement | null>(null);
 const cardEl = ref<HTMLElement | null>(null);
 const contentEl = ref<HTMLElement | null>(null);
 const fgEl = ref<HTMLElement | null>(null);
@@ -70,13 +71,15 @@ onMounted(() => {
     gsap.to(cardEl.value, {
       x: SLIDE_SPACING * props.pos,
       z: props.pos === 0 ? 0 : -120,
+      delay: props.idx * 0.3,
+      ease: "power3",
       rotateY: -20 * props.pos,
       filter:
         props.pos === 0
           ? "grayscale(0) brightness(1)"
           : "grayscale(100) brightness(.5)",
       onStart: () => {
-        if (cardEl.value) cardEl.value.style.zIndex = "0";
+        if (cardEl.value) cardEl.value.style.zIndex = (1 * props.idx).toString();
       },
     });
 
@@ -174,23 +177,28 @@ const getImgUrl = ({ imgType = "bg" }: { imgType?: "fg" | "bg" } = {}) => {
 
 <template>
   <div
-    ref="cardEl"
-    class="absolute-center w-[300px] h-[450px] bg-slate-300 slide-inner"
+    ref="cardContainer"
+    class="absolute-center w-[300px] h-[450px] slide-inner"
     @pointerleave="resetMouseOverEffect"
   >
-    <img
-      class="w-full h-full object-cover"
-      :src="getImgUrl()"
-      :alt="slideData.heading"
-    />
-    <img
-      v-if="getImgUrl({ imgType: 'fg' })"
-      ref="fgEl"
-      class="absolute top-0"
-      :src="getImgUrl({ imgType: 'fg' })"
-      :alt="slideData.heading"
-      style="transform-origin: top center 25px"
-    />
+    <div
+      ref="cardEl"
+      class="w-full h-full"
+    >
+      <img
+        class="w-full h-full object-cover"
+        :src="getImgUrl()"
+        :alt="slideData.heading"
+      />
+      <img
+        v-if="getImgUrl({ imgType: 'fg' })"
+        ref="fgEl"
+        class="absolute top-0"
+        :src="getImgUrl({ imgType: 'fg' })"
+        :alt="slideData.heading"
+        style="transform-origin: top center 25px"
+      />
+    </div>
   </div>
   <div
     ref="contentEl"
