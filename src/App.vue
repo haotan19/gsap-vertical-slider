@@ -3,6 +3,7 @@ import Slide from "./components/slide.vue";
 import { gsap } from "gsap";
 import { onMounted, reactive } from "vue";
 import { SlideData } from "./types";
+import MouseFollower from "./components/mouseFollower.vue";
 
 const slideData: SlideData[] = [
   {
@@ -76,6 +77,7 @@ onMounted(() => {
   >
     NEXT
   </button>
+  <MouseFollower></MouseFollower>
 </template>
 
 <style>

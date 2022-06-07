@@ -13,6 +13,7 @@ const props = defineProps<{
 
 const data = reactive({
   onPosTransition: false,
+  rXTo: new Function(),
 });
 
 const cardEl = ref<HTMLElement | null>(null);
@@ -65,7 +66,7 @@ const handlePositionUpdate = (newPos: number, oldPos: number) => {
 watch(() => props.pos, handlePositionUpdate);
 
 onMounted(() => {
-  if (cardEl) {
+  if (cardEl && cardEl.value) {
     gsap.to(cardEl.value, {
       x: SLIDE_SPACING * props.pos,
       z: props.pos === 0 ? 0 : -120,
@@ -78,10 +79,40 @@ onMounted(() => {
         if (cardEl.value) cardEl.value.style.zIndex = "0";
       },
     });
+
+    let cardTo = gsap.quickSetter(cardEl.value, "css");
+
+    let contentTo: Function | undefined;
+    if (contentEl.value) contentTo = gsap.quickSetter(contentEl.value, "css");
+
+    let fgTo : Function | undefined;
+    if(fgEl.value) fgTo = gsap.quickSetter(fgEl.value, "css");
+
+    cardEl.value.addEventListener("pointermove", (e) => {
+      const result = handleMouseOverEffect(e);
+      if (!result) return;
+
+      cardTo({ rotateX: result.rotateX, rotateY: result.rotateY });
+      if (contentTo)
+        contentTo({
+          rotateX: result.rotateX,
+          rotateY: result.rotateX,
+          z: 100, // TODO: need some curve on Z transform
+        });
+
+      const fgResult = handleMouseOverEffect(e, true);
+      if (!fgResult) return;
+      if(fgTo) 
+        fgTo({
+          rotateX: fgResult.rotateX,
+          rotateY: fgResult.rotateX,
+          z: 25, // TODO: need some curve on Z transform
+        })
+    });
   }
 });
 
-const handleMouseOverEffect = (event: PointerEvent) => {
+const handleMouseOverEffect = (event: PointerEvent, fg?: boolean) => {
   const rect = cardEl.value?.getBoundingClientRect();
   if (!data.onPosTransition && props.pos === 0 && rect) {
     const horizontalPercentage =
@@ -91,23 +122,41 @@ const handleMouseOverEffect = (event: PointerEvent) => {
 
     // IMPROVEMENT:  consider using gsap.set() or gsap.quickSetter()
     //     because it can deliver even better performance.
-    if (cardEl.value)
-      gsap.to(cardEl.value, {
-        rotateX: (5 * verticalPercentage) / 100,
-        rotateY: (4 * horizontalPercentage) / 100,
-      });
-    if (contentEl.value)
-      gsap.to(contentEl.value, {
-        rotateX: (5 * verticalPercentage) / 100,
-        rotateY: (4 * horizontalPercentage) / 100,
-        translateZ: 100,
-      });
-    if (fgEl.value)
-      gsap.to(fgEl.value, {
-        rotateX: (7 * verticalPercentage) / 100,
-        rotateY: (7 * horizontalPercentage) / 100,
-        translateZ: 25,
-      });
+
+    let rotateX = (5 * verticalPercentage) / 100;
+    let rotateY = (4 * horizontalPercentage) / 100;
+    if (fg) {
+      rotateX = (7 * verticalPercentage) / 100;
+      rotateY = (7 * horizontalPercentage) / 100;
+    }
+
+    return {
+        rotateX,
+        rotateY,
+    };
+
+    if (cardEl.value) {
+      // let rXTo = gsap.quickTo(cardEl.value, "rotateX", { ease: "power2" })
+      // let rYTo = gsap.quickTo(cardEl.value, "rotateY", { ease: "power3" })
+      // data.rXTo(rotateX);
+      // rYTo(rotateY)
+    }
+    // if (contentEl.value) {
+    //   let rXTo = gsap.quickTo(contentEl.value, "rotateX", { ease: "power3" })
+    //   let rYTo = gsap.quickTo(contentEl.value, "rotateY", { ease: "power3" })
+    //   let zTo = gsap.quickTo(contentEl.value, "translateZ")
+    //   rXTo(rotateX)
+    //   rXTo(rotateY)
+    //   zTo(100)
+    // }
+    // if (fgEl.value) {
+    //   let rXTo = gsap.quickTo(fgEl.value, "rotateX", { ease: "power3" })
+    //   let rYTo = gsap.quickTo(fgEl.value, "rotateY", { ease: "power3" })
+    //   let zTo = gsap.quickTo(fgEl.value, "translateZ")
+    //   rXTo((7 * verticalPercentage) / 100)
+    //   rXTo((7 * horizontalPercentage) / 100)
+    //   zTo(25)
+    // }
   }
 };
 const resetMouseOverEffect = (event: PointerEvent) => {
@@ -153,7 +202,6 @@ const getImgUrl = ({ imgType = "bg" }: { imgType?: "fg" | "bg" } = {}) => {
   <div
     ref="cardEl"
     class="absolute-center w-[300px] h-[450px] bg-slate-300 slide-inner"
-    @pointermove="handleMouseOverEffect"
     @pointerleave="resetMouseOverEffect"
   >
     <img
