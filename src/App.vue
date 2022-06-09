@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import Slide from "./components/slide.vue";
-import { gsap } from "gsap";
-import { onMounted, reactive } from "vue";
-import { SlideData } from "./types";
-import MouseFollower from "./components/mouseFollower.vue";
+import GsapSlide from "./components/slide.vue"
+import { onMounted, reactive } from "vue"
+import { SlideData } from "./types"
+import MouseFollower from "./components/mouseFollower.vue"
 
 const slideData: SlideData[] = [
   {
@@ -16,7 +15,7 @@ const slideData: SlideData[] = [
     id: 2,
     heading: "Step out to the edge",
     img: "../assets/s2-bg-unsplash.png",
-    imgFg: "../assets/s2-fg-unsplash.png"
+    imgFg: "../assets/s2-fg-unsplash.png",
   },
   {
     id: 3,
@@ -34,49 +33,30 @@ const slideData: SlideData[] = [
     img: "../assets/s5-bg.png",
     imgFg: "../assets/s5-fg.png",
   },
-];
+]
 
 const slidesPositions = reactive({
   value: [-2, -1, 0, 1, 2],
-});
+})
 
 const handleNextSlideTransition = () => {
-  slidesPositions.value = slidesPositions.value.map((num) =>
-    num > -2 ? num - 1 : 2
-  );
-};
+  slidesPositions.value = slidesPositions.value.map((num) => (num > -2 ? num - 1 : 2))
+}
 const handlePreviousSlideTransition = () => {
-  slidesPositions.value = slidesPositions.value.map((num) =>
-    num < 2 ? num + 1 : -2
-  );
-};
+  slidesPositions.value = slidesPositions.value.map((num) => (num < 2 ? num + 1 : -2))
+}
 
 onMounted(() => {
   // gsap.fromTo
-});
+})
 </script>
 
 <template>
   <div class="relative overflow-hidden w-screen h-screen perspective">
-    <Slide
-      v-for="(d, idx) in slideData"
-      :idx="idx"
-      :pos="slidesPositions.value[idx]"
-      :slide-data="d"
-    ></Slide>
+    <GsapSlide v-for="(d, idx) in slideData" :key="d.id" :idx="idx" :pos="slidesPositions.value[idx]" :slide-data="d"></GsapSlide>
   </div>
-  <button
-    class="absolute left-4 top-1/2 p-8"
-    @click="handlePreviousSlideTransition"
-  >
-    Prev
-  </button>
-  <button
-    class="absolute right-4 top-1/2 p-8"
-    @click="handleNextSlideTransition"
-  >
-    NEXT
-  </button>
+  <button class="absolute left-4 top-1/2 p-8" @click="handlePreviousSlideTransition">Prev</button>
+  <button class="absolute right-4 top-1/2 p-8" @click="handleNextSlideTransition">NEXT</button>
   <MouseFollower></MouseFollower>
 </template>
 

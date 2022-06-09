@@ -1,22 +1,22 @@
 <script lang="ts" setup>
-import { onMounted } from 'vue';
-import { gsap } from "gsap";
+import { onMounted } from "vue"
+import { gsap } from "gsap"
 
 onMounted(() => {
-    gsap.set(".ball", {xPercent: -50, yPercent: -50});
-    
-    let xTo = gsap.quickTo(".ball", "x", {duration: 0.6, ease: "power3"}),
-        yTo = gsap.quickTo(".ball", "y", {duration: 0.6, ease: "power3"});
-    
-    window.addEventListener("mousemove", e => {
-      xTo(e.clientX);
-      yTo(e.clientY);
-    });
-})    
+  gsap.set(".ball", { xPercent: -50, yPercent: -50 })
+
+  let xTo = gsap.quickTo(".ball", "x", { duration: 0.6, ease: "power3" }),
+    yTo = gsap.quickTo(".ball", "y", { duration: 0.6, ease: "power3" })
+
+  window.addEventListener("mousemove", (e) => {
+    xTo(e.clientX)
+    yTo(e.clientY)
+  })
+})
 </script>
 
 <template>
-<div class="ball"></div>
+  <div class="ball"></div>
 </template>
 
 <style>

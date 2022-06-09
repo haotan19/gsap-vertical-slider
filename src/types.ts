@@ -1,6 +1,6 @@
 export interface SlideData {
-  id: number;
-  heading?: string;
-  img?: string,
-  imgFg?: string,
+  id: number
+  heading?: string
+  img?: string
+  imgFg?: string
 }
